@@ -1,0 +1,11 @@
+# source|skill
+# Edit this file to choose your skills. Re-run install.sh after changing it.
+# Use an immutable source URL when you need the exact same skill version on every device.
+
+mattpocock/skills|grill-with-docs
+mattpocock/skills|to-spec
+mattpocock/skills|implement
+mattpocock/skills|tdd
+mattpocock/skills|diagnosing-bugs
+mattpocock/skills|code-review
+obra/superpowers|verification-before-completion
