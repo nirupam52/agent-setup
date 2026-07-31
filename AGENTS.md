@@ -2,7 +2,7 @@
 
 - Understand existing code before editing.
 - Make the smallest complete change.
-- Prefer simple and maintainable solutions.
+- Prefer simple, idiomatic and maintainable solutions.
 - Follow existing project conventions.
 - Test behavior through stable interfaces.
 - Validate inputs at trust boundaries.

@@ -7,6 +7,7 @@ mattpocock/skills|implement
 mattpocock/skills|tdd
 mattpocock/skills|wayfinder
 mattpocock/skills|implement
+mattpocock/skills|teach
 mattpocock/skills|diagnosing-bugs
 mattpocock/skills|code-review
 mattpocock/skills|codebase-design
