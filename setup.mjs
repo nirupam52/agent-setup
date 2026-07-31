@@ -128,14 +128,19 @@ function applyRules(plan, rules) {
   writeFileSync(plan.target, mergeRules(readFileSync(plan.target, 'utf8'), rules));
 }
 
+export function npxInvocation(args, platform = process.platform) {
+  if (platform === 'win32') return { command: 'cmd.exe', args: ['/d', '/s', '/c', 'npx.cmd', ...args] };
+  return { command: 'npx', args };
+}
+
 function runNpx(args) {
-  const command = process.platform === 'win32' ? 'npx.cmd' : 'npx';
-  const result = spawnSync(command, ['--yes', 'skills', ...args], {
+  const invocation = npxInvocation(['--yes', 'skills', ...args]);
+  const result = spawnSync(invocation.command, invocation.args, {
     encoding: 'utf8',
     env: { ...process.env, DISABLE_TELEMETRY: '1' },
   });
   if (result.error) throw result.error;
-  if (result.status !== 0) throw new Error(result.stderr.trim() || result.stdout.trim() || `Skills CLI failed: ${command} ${args.join(' ')}`);
+  if (result.status !== 0) throw new Error(result.stderr.trim() || result.stdout.trim() || `Skills CLI failed: ${invocation.command} ${args.join(' ')}`);
   return result.stdout;
 }
 

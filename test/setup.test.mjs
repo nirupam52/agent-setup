@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import { linkedManagedSkill, mergeRules, missingSkills, parseManifest, planSkills } from '../setup.mjs';
+import { linkedManagedSkill, mergeRules, missingSkills, npxInvocation, parseManifest, planSkills } from '../setup.mjs';
 
 test('parses a manifest once per source and skill', () => {
   assert.deepEqual(
@@ -50,6 +50,13 @@ test('does not claim ownership when a manual source replaced a managed skill', (
   assert.equal(
     linkedManagedSkill([{ name: 'lint', source: 'manual/tools', agents: ['Codex'] }], { name: 'Codex' }, 'old/tools|lint'),
     undefined,
+  );
+});
+
+test('uses cmd.exe to launch npx on Windows', () => {
+  assert.deepEqual(
+    npxInvocation(['--version'], 'win32'),
+    { command: 'cmd.exe', args: ['/d', '/s', '/c', 'npx.cmd', '--version'] },
   );
 });
 
