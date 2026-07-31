@@ -1,70 +1,39 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import { linkedManagedSkill, mergeRules, missingSkills, npxInvocation, parseManifest, planSkills } from '../setup.mjs';
+import { groupBySource, npxInvocation, parseManifest } from '../setup.mjs';
 
-test('parses a manifest once per source and skill', () => {
+test('parses and de-duplicates manifest entries', () => {
   assert.deepEqual(
-    parseManifest('# source|skill\nacme/tools|lint\nacme/tools|lint\nobra/tools|verify\n'),
+    parseManifest('# source|skill\nacme/tools|lint\nacme/tools|lint\nhttps://example.com/skill?ref=one&tag=two|verify\n'),
     [
       { source: 'acme/tools', skill: 'lint' },
-      { source: 'obra/tools', skill: 'verify' },
+      { source: 'https://example.com/skill?ref=one&tag=two', skill: 'verify' },
     ],
   );
 });
 
-test('plans additions, refreshes, and managed removals per agent', () => {
-  const desired = [
-    { source: 'acme/tools', skill: 'lint' },
-    { source: 'obra/tools', skill: 'verify' },
-  ];
-  const state = {
-    version: 1,
-    agents: {
-      codex: ['acme/tools|lint', 'old/tools|legacy'],
-    },
-  };
-
-  assert.deepEqual(planSkills(desired, state, 'codex'), {
-    add: [{ source: 'obra/tools', skill: 'verify' }],
-    refresh: [{ source: 'acme/tools', skill: 'lint' }],
-    remove: ['old/tools|legacy'],
-  });
+test('rejects malformed manifest entries', () => {
+  assert.throws(() => parseManifest('acme/tools|lint|ignored\n'), /Invalid skill entry/);
 });
 
-test('does not remove a skill when its source changes', () => {
+test('groups skills into one CLI call per source', () => {
   assert.deepEqual(
-    planSkills([{ source: 'new/tools', skill: 'lint' }], { version: 1, agents: { codex: ['old/tools|lint'] } }, 'codex'),
-    { add: [{ source: 'new/tools', skill: 'lint' }], refresh: [], remove: [] },
+    [...groupBySource([
+      { source: 'acme/tools', skill: 'lint' },
+      { source: 'obra/tools', skill: 'verify' },
+      { source: 'acme/tools', skill: 'format' },
+    ])],
+    [
+      ['acme/tools', ['lint', 'format']],
+      ['obra/tools', ['verify']],
+    ],
   );
 });
 
-test('requires every requested skill to be linked to the selected agent', () => {
-  assert.deepEqual(
-    missingSkills([{ source: 'acme/tools', skill: 'lint' }], [{ name: 'lint', agents: ['Claude Code'] }], { name: 'Codex' }),
-    [{ source: 'acme/tools', skill: 'lint' }],
-  );
-});
-
-test('does not claim ownership when a manual source replaced a managed skill', () => {
-  assert.equal(
-    linkedManagedSkill([{ name: 'lint', source: 'manual/tools', agents: ['Codex'] }], { name: 'Codex' }, 'old/tools|lint'),
-    undefined,
-  );
-});
-
-test('uses cmd.exe to launch npx on Windows', () => {
+test('uses cmd.exe for the Windows npx shim', () => {
   assert.deepEqual(
     npxInvocation(['--version'], 'win32'),
     { command: 'cmd.exe', args: ['/d', '/s', '/c', 'npx.cmd', '--version'] },
   );
-});
-
-test('updates only the managed rule section', () => {
-  const first = mergeRules('my personal rule\n', 'shared rule');
-  const second = mergeRules(first, 'new shared rule');
-
-  assert.match(first, /my personal rule/);
-  assert.match(second, /new shared rule/);
-  assert.equal([...second.matchAll(/agent-setup:start/g)].length, 1);
 });
