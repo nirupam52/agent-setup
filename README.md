@@ -11,54 +11,27 @@ Install Node.js (includes `npx`), then edit [skills.txt](skills.txt) to list the
 mattpocock/skills|tdd
 ```
 
-Each non-comment line installs one skill. Keep the manifest in Git so your devices use the same list.
+Each non-comment line installs one skill. Keep the manifest in Git so your devices use the same list. Duplicate lines are ignored.
 
 ## Install
 
-Clone this repository, then run the installer for your operating system.
-
-### macOS, Linux, WSL, or Git Bash
+Clone this repository, review `skills.txt`, then run:
 
 ```bash
-chmod +x install.sh
-./install.sh
+node setup.mjs
 ```
 
-### Windows PowerShell
+Setup detects installed supported agents and lets you select one or more. Before changing anything it shows a summary of the global rule-file action and the skills to add, refresh, or remove.
 
-```powershell
-.\install.ps1
-```
-
-If PowerShell blocks the script:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\install.ps1
-```
-
-The installer lets you choose Claude Code, OpenCode, Codex, or all three. It shows the skills it will install and asks for confirmation before changing anything.
-
-## Safe options
-
-```bash
-./install.sh --dry-run
-./install.sh --replace-instructions
-```
-
-```powershell
-.\install.ps1 -DryRun
-.\install.ps1 -ReplaceInstructions
-```
-
-`--dry-run` / `-DryRun` previews the setup without changes. Existing global instruction files are preserved by default; replacement makes a timestamped backup first.
+If a selected agent already has a global rules file, choose whether to append this repository's managed section or replace the file. Replacement creates a timestamped backup. Later runs update only the managed section, leaving other personal rules alone.
 
 ## Update another device
 
 ```bash
 git pull
-./install.sh
+node setup.mjs
 ```
 
-On Windows PowerShell, run `git pull` followed by `.\install.ps1`; in Git Bash, run `git pull` followed by `./install.sh`.
+On every platform, run `git pull` followed by `node setup.mjs`.
 
-The installer disables Skills CLI telemetry for its own commands and verifies that selected skills are linked before reporting success. Deleting a line from `skills.txt` does not remove an already installed skill; remove it deliberately with the Skills CLI.
+Setup installs the latest source version, disables Skills CLI telemetry for its own commands, and verifies every selected skill for every selected agent before reporting success. Deleting a skill from `skills.txt` removes it only when this installer previously managed it for that selected agent; independently installed skills are left alone. If a source fails, rerun setup after fixing it—completed work is safe to repeat.
