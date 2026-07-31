@@ -43,7 +43,7 @@ if ($selected -in @('a', 'all')) { $selected = '1 2 3' }
 
 $agents = @()
 function Add-Agent([string]$Name, [string]$Id, [string]$InstructionTarget, [string]$SkillDir) {
-  if ($agents.Id -contains $Id) { return }
+  if ($script:agents | Where-Object Id -eq $Id) { return }
   $script:agents += [pscustomobject]@{
     Name = $Name; Id = $Id; InstructionTarget = $InstructionTarget; SkillDir = $SkillDir
   }

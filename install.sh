@@ -22,8 +22,8 @@ while (($#)); do
 done
 
 case $(uname -s) in
-  Darwin|Linux) ;;
-  *) echo 'Use this script on macOS, Linux, or WSL.' >&2; exit 1 ;;
+  Darwin|Linux|MINGW*|MSYS*|CYGWIN*) ;;
+  *) echo 'Use this script on macOS, Linux, WSL, or Git Bash.' >&2; exit 1 ;;
 esac
 
 for file in "$instructions" "$skills"; do

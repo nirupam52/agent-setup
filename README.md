@@ -17,7 +17,7 @@ Each non-comment line installs one skill. Keep the manifest in Git so your devic
 
 Clone this repository, then run the installer for your operating system.
 
-### macOS, Linux, or WSL
+### macOS, Linux, WSL, or Git Bash
 
 ```bash
 chmod +x install.sh
@@ -59,6 +59,6 @@ git pull
 ./install.sh
 ```
 
-On Windows, run `git pull` followed by `.\install.ps1`.
+On Windows PowerShell, run `git pull` followed by `.\install.ps1`; in Git Bash, run `git pull` followed by `./install.sh`.
 
 The installer disables Skills CLI telemetry for its own commands and verifies that selected skills are linked before reporting success. Deleting a line from `skills.txt` does not remove an already installed skill; remove it deliberately with the Skills CLI.
