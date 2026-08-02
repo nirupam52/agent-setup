@@ -6,9 +6,10 @@ mattpocock/skills|grill-with-docs
 mattpocock/skills|implement
 mattpocock/skills|tdd
 mattpocock/skills|wayfinder
-mattpocock/skills|implement
 mattpocock/skills|teach
 mattpocock/skills|diagnosing-bugs
+mattpocock/skills|to-spec
+mattpocock/skills|prototype
 mattpocock/skills|code-review
 mattpocock/skills|codebase-design
 mattpocock/skills|improve-codebase-architecture
