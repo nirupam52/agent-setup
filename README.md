@@ -1,6 +1,6 @@
 # Coding Agent Setup
 
-Install the same global skills for your coding agents on each computer.
+Install the same skills for your coding agents on each computer.
 
 ## Before you start
 
@@ -21,7 +21,15 @@ Clone this repository, review `skills.txt`, then run:
 node setup.mjs
 ```
 
-For each source in the manifest, setup runs the Skills CLI's normal global install. The CLI detects installed agents and handles its own selection prompts.
+By default, setup installs skills in the current project. This works with PromptScript, which supports project skills but has no global skill directory.
+
+For a global install, select an agent that supports global skills:
+
+```bash
+node setup.mjs --global --agent codex
+```
+
+Repeat `--agent` to target more than one agent, for example `--global --agent codex --agent claude-code`. Do not target `promptscript` with `--global`; the Skills CLI will reject it.
 
 ## Update another device
 
