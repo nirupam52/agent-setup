@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import { groupBySource, npxInvocation, parseManifest } from '../setup.mjs';
+import { groupBySource, installArgs, npxInvocation, parseManifest, parseOptions } from '../setup.mjs';
 
 test('parses and de-duplicates manifest entries', () => {
   assert.deepEqual(
@@ -28,6 +28,29 @@ test('groups skills into one CLI call per source', () => {
       ['acme/tools', ['lint', 'format']],
       ['obra/tools', ['verify']],
     ],
+  );
+});
+
+test('defaults to project installation and parses explicit agent targets', () => {
+  assert.deepEqual(parseOptions([]), { global: false, agents: [] });
+  assert.deepEqual(parseOptions(['--global', '--agent', 'codex', '-a', 'claude-code']), {
+    global: true,
+    agents: ['codex', 'claude-code'],
+  });
+});
+
+test('requires an explicit globally supported agent for global installation', () => {
+  assert.throws(() => parseOptions(['--global']), /requires at least one --agent/);
+});
+
+test('builds project and global Skills CLI arguments', () => {
+  assert.deepEqual(
+    installArgs('acme/tools', ['lint', 'format']),
+    ['add', 'acme/tools', '--skill', 'lint', '--skill', 'format'],
+  );
+  assert.deepEqual(
+    installArgs('acme/tools', ['lint'], { global: true, agents: ['codex'] }),
+    ['add', 'acme/tools', '--skill', 'lint', '--global', '--agent', 'codex'],
   );
 });
 
