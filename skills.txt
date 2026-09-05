@@ -15,3 +15,4 @@ mattpocock/skills|codebase-design
 mattpocock/skills|improve-codebase-architecture
 juliusbrussee/caveman|caveman
 obra/superpowers|verification-before-completion
+leonxlnx/taste-skill|design-taste-frontend
